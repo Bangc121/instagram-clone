@@ -20,20 +20,9 @@ async function getData() {
 }
 
 export default async function Home() {
-  const data: post[] = await getData();
-
-  console.log("data", data);
   return (
     <>
       <h1>ewfefef</h1>
-      {data.map((post) => {
-        return (
-          <div key={post.title}>
-            <h1>{post.title}</h1>
-            <p>{post.content}</p>
-          </div>
-        );
-      })}
       <Login />
     </>
   );
