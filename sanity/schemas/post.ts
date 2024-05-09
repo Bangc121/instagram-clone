@@ -8,12 +8,6 @@ const post = {
   icon: BiUser,
   fields: [
     defineField({
-      name: "title",
-      title: "Title",
-      type: "string",
-      validation: (rule) => rule.required(),
-    }),
-    defineField({
       name: "content",
       title: "Content",
       type: "string",
@@ -21,10 +15,10 @@ const post = {
       validation: (Rule) => Rule.required(),
     }),
     {
-      name: "thumbnail",
-      title: "Thumbnail Image",
+      name: "image",
+      title: "Post Image",
       type: "image",
-      description: "Upload a thumbnail picture",
+      description: "Upload a post picture",
       options: { hotspot: true },
       fields: [
         {
@@ -33,6 +27,11 @@ const post = {
           type: "string",
         },
       ],
+    },
+    {
+      name: "createdAt",
+      title: "Created at",
+      type: "datetime",
     },
   ],
 };

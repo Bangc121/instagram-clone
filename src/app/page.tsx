@@ -1,28 +1,47 @@
-import Login from "@/components/Login";
-import { client } from "../../sanity/lib/client";
+"use client";
 
-type post = {
-  title: string;
+import { client, getPosts } from "../../sanity/lib/client";
+import { useEffect, useState } from "react";
+
+import Image from "next/image";
+import Login from "@/components/Login";
+import PostCard from "@/components/PostCard";
+
+export type Post = {
   content: string;
-  thumbnail: string;
+  image: {
+    asset: {
+      _ref: string;
+      _type: string;
+    };
+    alt: string;
+    _type: string;
+  };
 };
 
-async function getData() {
-  const query = `*[_type == "post"] {
-    title,
-    content,
-    thumbnail
-  }`;
+export default function Home() {
+  const [posts, setPosts] = useState<Post[]>([]);
 
-  const data = await client.fetch(query);
+  useEffect(() => {
+    fetchPosts();
+  }, []);
 
-  return data;
-}
+  const fetchPosts = async () => {
+    const response = await getPosts();
+    console.log(response);
+    setPosts(response);
+  };
 
-export default async function Home() {
   return (
     <>
-      <h1>ewfefef</h1>
+      <ul className="grid ">
+        {posts &&
+          posts.map((post) => (
+            <li key={post.content}>
+              <PostCard post={post} />
+            </li>
+          ))}
+      </ul>
       <Login />
     </>
   );
