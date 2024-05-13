@@ -24,7 +24,6 @@ export default function RootLayout({
         <AuthContext>
           <Header />
           <main className="grow">{children}</main>
-          <Footer />
         </AuthContext>
       </body>
     </html>

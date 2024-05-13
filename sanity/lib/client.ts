@@ -8,6 +8,7 @@ export const client = createClient({
   projectId,
   useCdn,
   token,
+  ignoreBrowserTokenWarning: true,
 });
 
 export async function getPosts() {

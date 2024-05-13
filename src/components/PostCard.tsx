@@ -1,5 +1,6 @@
-import Image from "next/image";
 import { Post, User } from "@/app/page";
+
+import Image from "next/image";
 import { client } from "../../sanity/lib/client";
 
 export default function PostCard({ post, user }: { post: Post; user: User }) {
@@ -17,6 +18,7 @@ export default function PostCard({ post, user }: { post: Post; user: User }) {
         <h1>{user.name}</h1>
       </div>
       <Image
+        priority={true}
         src={`https://cdn.sanity.io/images/${client.config().projectId}/${client.config().dataset}/${image.asset._ref.split("-")[1] + "-" + image.asset._ref.split("-")[2] + "." + image.asset._ref.split("-")[3]}`}
         alt={image.alt}
         width={500}

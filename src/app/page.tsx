@@ -1,12 +1,7 @@
-"use client";
+import { Suspense, useEffect, useState } from "react";
 
-import { getPosts } from "../../sanity/lib/client";
-import { useEffect, useState } from "react";
-
-import Image from "next/image";
+import Loading from "./loading";
 import Login from "@/components/Login";
-import PostCard from "@/components/PostCard";
-import { useSession } from "next-auth/react";
 
 export type Post = {
   content: string;
@@ -27,31 +22,9 @@ export type User = {
 };
 
 export default function Home() {
-  const { data: session } = useSession();
-  const [posts, setPosts] = useState<Post[]>([]);
-
-  useEffect(() => {
-    fetchPosts();
-  }, []);
-
-  const fetchPosts = async () => {
-    const response = await getPosts();
-    console.log(response);
-    setPosts(response);
-  };
-
   return (
-    <>
-      <ul className="grid grid-flow-row">
-        {session &&
-          posts &&
-          posts.map((post) => (
-            <li key={post.content}>
-              <PostCard post={post} user={session.user} />
-            </li>
-          ))}
-      </ul>
+    <Suspense fallback={<h1>Loading Login</h1>}>
       <Login />
-    </>
+    </Suspense>
   );
 }

@@ -1,89 +1,135 @@
 "use client";
 
-import { useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 
-type props = {
-  file: string;
-  setFile: (file: string) => void;
-};
+import Button from "./Button/Button";
+import { IoIosCloseCircleOutline } from "react-icons/io";
+import { PostForm } from "@/app/write/page";
+import { uploadImage } from "@/services/posts";
 
-export default function FileUpload({ file, setFile }: props) {
+export default function FileUpload() {
   const [fileEnter, setFileEnter] = useState(false);
+  const [file, setFile] = useState<File>();
+
+  const [form, setForm] = useState<PostForm>({
+    content: "",
+    file: "",
+  });
+  const onChange = (e: ChangeEvent<HTMLInputElement & HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+
+    let files = e.target.files;
+    if (files && files[0]) {
+      let blobUrl = URL.createObjectURL(files[0]);
+      setFile(files[0]);
+      setForm((prev) => ({ ...prev, [name]: blobUrl }));
+    } else {
+      setForm((prev) => ({ ...prev, [name]: value }));
+    }
+  };
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const fileUploadRes = await uploadImage({
+      content: form.content,
+      image: file!,
+    });
+
+    if (fileUploadRes.state) {
+      console.log("post was created");
+    }
+  };
 
   return (
-    <div className="container max-w-5xl mx-auto">
-      {!file ? (
-        <div
-          onDragOver={(e) => {
-            e.preventDefault();
-            setFileEnter(true);
-          }}
-          onDragLeave={(e) => {
-            setFileEnter(false);
-          }}
-          onDragEnd={(e) => {
-            e.preventDefault();
-            setFileEnter(false);
-          }}
-          onDrop={(e) => {
-            e.preventDefault();
-            setFileEnter(false);
-            if (e.dataTransfer.items) {
-              [...e.dataTransfer.items].forEach((item, i) => {
-                if (item.kind === "file") {
-                  const file = item.getAsFile();
-                  if (file) {
-                    let blobUrl = URL.createObjectURL(file);
-                    setFile(blobUrl);
-                  }
-                  console.log(`items file[${i}].name = ${file?.name}`);
+    <>
+      <form className="container px-4 max-w-5xl mx-auto" onSubmit={onSubmit}>
+        <div className="container max-w-5xl mx-auto mb-5 h-96">
+          {!form.file ? (
+            <div
+              onDragOver={(e) => {
+                e.preventDefault();
+                setFileEnter(true);
+              }}
+              onDragLeave={(e) => {
+                setFileEnter(false);
+              }}
+              onDragEnd={(e) => {
+                e.preventDefault();
+                setFileEnter(false);
+              }}
+              onDrop={(e) => {
+                e.preventDefault();
+                setFileEnter(false);
+                if (e.dataTransfer.items) {
+                  [...e.dataTransfer.items].forEach((item, i) => {
+                    if (item.kind === "file") {
+                      const file = item.getAsFile();
+                      if (file) {
+                        let blobUrl = URL.createObjectURL(file);
+                        setForm((prev) => ({ ...prev, file: blobUrl }));
+                      }
+                      console.log(`items file[${i}].name = ${file?.name}`);
+                    }
+                  });
+                } else {
+                  [...e.dataTransfer.files].forEach((file, i) => {
+                    console.log(`… file[${i}].name = ${file.name}`);
+                  });
                 }
-              });
-            } else {
-              [...e.dataTransfer.files].forEach((file, i) => {
-                console.log(`… file[${i}].name = ${file.name}`);
-              });
-            }
-          }}
-          className={`${
-            fileEnter ? "border-4" : "border-2"
-          } mx-auto  bg-white flex flex-col w-full h-72 border-dashed items-center justify-center`}
+              }}
+              className={`${
+                fileEnter ? "border-4" : "border-2"
+              } mx-auto  bg-white flex flex-col w-full border-dashed items-center justify-center h-96`}
+            >
+              <label
+                htmlFor="file"
+                className="h-full flex flex-col justify-center text-center"
+              >
+                Click to upload or drag and drop
+              </label>
+              <input
+                id="file"
+                type="file"
+                name="file"
+                className="hidden"
+                onChange={onChange}
+              />
+            </div>
+          ) : (
+            <div className="relative flex flex-col max-w-5xl mx-auto items-center bg-black">
+              <object
+                className="max-w-5xl h-96"
+                data={form.file}
+                type="image/png" //need to be updated based on type of file
+              />
+              <IoIosCloseCircleOutline
+                className="absolute right-4 top-4 w-9 h-9"
+                color="white"
+                onClick={() => setForm((prev) => ({ ...prev, file: "" }))}
+              ></IoIosCloseCircleOutline>
+            </div>
+          )}
+        </div>
+        <textarea
+          rows={10}
+          placeholder="write a caption"
+          id="content"
+          name="content"
+          required
+          value={form.content}
+          onChange={onChange}
+          className="w-full h-500 border-2 border-gray-300 text-black"
+        />
+        <Button
+          variant={"primary"}
+          color="bg-red-400"
+          fullWidth={true}
+          rounded="md"
         >
-          <label
-            htmlFor="file"
-            className="h-full flex flex-col justify-center text-center"
-          >
-            Click to upload or drag and drop
-          </label>
-          <input
-            id="file"
-            type="file"
-            className="hidden"
-            onChange={(e) => {
-              console.log(e.target.files);
-              let files = e.target.files;
-              if (files && files[0]) {
-                let blobUrl = URL.createObjectURL(files[0]);
-                setFile(blobUrl);
-              }
-            }}
-          />
-        </div>
-      ) : (
-        <div className="flex flex-col max-w-5xl items-center">
-          <object
-            className="rounded-md w-full max-w-xs h-72"
-            data={file}
-            type="image/png" //need to be updated based on type of file
-          />
-          <button
-            onClick={() => setFile("")}
-            className="px-4 mt-10 uppercase py-2 tracking-widest outline-none bg-red-600 text-white rounded"
-          >
-            Reset
-          </button>
-        </div>
-      )}
-    </div>
+          <span className="text-white font-bold">Publish</span>
+        </Button>
+      </form>
+    </>
   );
 }
