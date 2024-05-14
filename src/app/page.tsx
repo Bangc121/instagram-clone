@@ -1,7 +1,11 @@
+"use client";
+
 import { Suspense, useEffect, useState } from "react";
 
 import Loading from "./loading";
 import Login from "@/components/Login";
+import PostList from "@/components/PostList";
+import { useSession } from "next-auth/react";
 
 export type Post = {
   content: string;
@@ -22,9 +26,19 @@ export type User = {
 };
 
 export default function Home() {
+  const { data: session, status } = useSession();
+  useEffect(() => {
+    console.log("status:", status);
+  }, [status]);
   return (
-    <Suspense fallback={<h1>Loading Login</h1>}>
-      <Login />
-    </Suspense>
+    <>
+      {status === "authenticated" ? (
+        <PostList />
+      ) : (
+        <Suspense fallback={<Loading />}>
+          <Login />
+        </Suspense>
+      )}
+    </>
   );
 }

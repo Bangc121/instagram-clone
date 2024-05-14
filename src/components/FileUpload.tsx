@@ -6,8 +6,10 @@ import Button from "./Button/Button";
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import { PostForm } from "@/app/write/page";
 import { uploadImage } from "@/services/posts";
+import { useSession } from "next-auth/react";
 
 export default function FileUpload() {
+  const { data: session } = useSession();
   const [fileEnter, setFileEnter] = useState(false);
   const [file, setFile] = useState<File>();
 
@@ -31,13 +33,16 @@ export default function FileUpload() {
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const fileUploadRes = await uploadImage({
-      content: form.content,
-      image: file!,
-    });
+    if (session?.user?.email) {
+      const fileUploadRes = await uploadImage({
+        writer: session?.user?.email,
+        content: form.content,
+        image: file!,
+      });
 
-    if (fileUploadRes.state) {
-      console.log("post was created");
+      if (fileUploadRes.state) {
+        console.log("post was created");
+      }
     }
   };
 

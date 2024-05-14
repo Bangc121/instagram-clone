@@ -10,8 +10,3 @@ export const client = createClient({
   token,
   ignoreBrowserTokenWarning: true,
 });
-
-export async function getPosts() {
-  const posts = await client.fetch('*[_type == "post"]');
-  return posts;
-}

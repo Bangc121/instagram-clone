@@ -14,6 +14,13 @@ const post = {
       description: "In one short sentence, what do you do?",
       validation: (Rule) => Rule.required(),
     }),
+    defineField({
+      name: "writer",
+      title: "Writer",
+      type: "string",
+      description: "owner of the post",
+      validation: (Rule) => Rule.required(),
+    }),
     {
       name: "image",
       title: "Post Image",

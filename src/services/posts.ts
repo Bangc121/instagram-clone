@@ -2,11 +2,20 @@ import { SanityImageAssetDocument } from "next-sanity";
 import { client } from "../../sanity/lib/client";
 
 export type PostUploadProps = {
+  writer: string;
   content: string;
   image: File;
 };
 
+export async function getPosts(email: string) {
+  const posts = await client.fetch(
+    `*[_type == "post" && writer == "${email}"]`
+  );
+  return posts;
+}
+
 export async function uploadImage({
+  writer,
   content,
   image,
 }: PostUploadProps): Promise<{ state: boolean }> {
@@ -20,6 +29,7 @@ export async function uploadImage({
         .create({
           _type: "post",
           content,
+          writer,
           image: {
             _type: "image",
             asset: {
