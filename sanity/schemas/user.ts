@@ -1,5 +1,6 @@
+import { defineArrayMember, defineField } from "sanity";
+
 import { BiUser } from "react-icons/bi";
-import { defineField } from "sanity";
 
 const user = {
   name: "user",
@@ -24,6 +25,30 @@ const user = {
       title: "Profile Image Url",
       type: "string",
     }),
+    {
+      type: "array",
+      name: "likes",
+      title: "Likes",
+      of: [
+        defineArrayMember({
+          type: "object",
+          name: "tag",
+          fields: [{ type: "string", name: "id" }],
+        }),
+      ],
+    },
+    {
+      type: "array",
+      name: "bookmarks",
+      title: "Bookmarks",
+      of: [
+        defineArrayMember({
+          type: "object",
+          name: "tag",
+          fields: [{ type: "string", name: "id" }],
+        }),
+      ],
+    },
     {
       name: "profileImage",
       title: "Profile Image",

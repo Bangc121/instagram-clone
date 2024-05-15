@@ -1,5 +1,11 @@
+import { defineArrayMember, defineField } from "sanity";
+
 import { BiUser } from "react-icons/bi";
-import { defineField } from "sanity";
+
+type like = {
+  _key?: string;
+  email: string;
+};
 
 const post = {
   name: "post",
@@ -15,12 +21,24 @@ const post = {
       validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: "writer",
-      title: "Writer",
+      name: "author",
+      title: "Author",
       type: "string",
       description: "owner of the post",
       validation: (Rule) => Rule.required(),
     }),
+    {
+      type: "array",
+      name: "likes",
+      title: "Likes",
+      of: [
+        defineArrayMember({
+          type: "object",
+          name: "tag",
+          fields: [{ type: "string", name: "email" }],
+        }),
+      ],
+    },
     {
       name: "image",
       title: "Post Image",

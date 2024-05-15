@@ -1,18 +1,20 @@
+"use client";
+
 import { useCallback, useEffect, useState } from "react";
 
 import { Post } from "@/app/page";
-import PostCard from "./PostCard";
-import { getAllPosts } from "@/services/posts";
+import PostGrid from "../PostGrid";
+import { getMyPosts } from "@/services/posts";
 import { useSession } from "next-auth/react";
 
-export default function PostList() {
+export default function UserPosts() {
   const { data: session } = useSession();
   const [posts, setPosts] = useState<Post[]>([]);
 
   const fetchPosts = useCallback(async () => {
     // await new Promise((resolve) => setTimeout(resolve, 5000));
     if (session?.user?.email) {
-      const response = await getAllPosts(session?.user?.email);
+      const response = await getMyPosts(session?.user?.email);
       setPosts(response);
     }
   }, [session?.user?.email]);
@@ -22,12 +24,8 @@ export default function PostList() {
   }, [fetchPosts]);
 
   return (
-    <ul className="grid grid-flow-row">
-      {posts.map((post) => (
-        <li key={post._id}>
-          <PostCard post={post} />
-        </li>
-      ))}
-    </ul>
+    <>
+      <PostGrid posts={posts} />
+    </>
   );
 }

@@ -8,7 +8,12 @@ import PostList from "@/components/PostList";
 import { useSession } from "next-auth/react";
 
 export type Post = {
+  _id: string;
   content: string;
+  likes: string[];
+  author: string;
+  isLiked: boolean;
+  isBookmarked: boolean;
   image: {
     asset: {
       _ref: string;
@@ -30,15 +35,5 @@ export default function Home() {
   useEffect(() => {
     console.log("status:", status);
   }, [status]);
-  return (
-    <>
-      {status === "authenticated" ? (
-        <PostList />
-      ) : (
-        <Suspense fallback={<Loading />}>
-          <Login />
-        </Suspense>
-      )}
-    </>
-  );
+  return <>{status === "authenticated" ? <PostList /> : <Login />}</>;
 }

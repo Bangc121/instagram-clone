@@ -35,7 +35,7 @@ export default function FileUpload() {
 
     if (session?.user?.email) {
       const fileUploadRes = await uploadImage({
-        writer: session?.user?.email,
+        author: session?.user?.email,
         content: form.content,
         image: file!,
       });
