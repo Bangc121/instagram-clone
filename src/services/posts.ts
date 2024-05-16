@@ -1,7 +1,8 @@
 import { Post } from "@/app/page";
 import { SanityImageAssetDocument } from "next-sanity";
 import { client } from "../../sanity/lib/client";
-import { getUserInfo } from "./user";
+import { getUserByEmail } from "./user";
+import postcss from "postcss";
 
 export type PostUploadProps = {
   author: string;
@@ -11,13 +12,13 @@ export type PostUploadProps = {
 
 export async function getAllPosts(email: string) {
   const posts = await client.fetch(`*[_type == "post"]`);
-  const user = await getUserInfo(email);
+  const user = await getUserByEmail(email);
 
   let filteredPosts = posts.map((post: Post) => {
     let tempPost;
     const like =
       user.likes &&
-      user.likes.find((like: { id: string }) => like.id === user._id);
+      user.likes.find((like: { id: string }) => like.id === post._id);
     const bookmark =
       user.bookmarks &&
       user.bookmarks.find(
@@ -48,24 +49,47 @@ export async function getMyPosts(email: string) {
 }
 
 export async function getSavedPosts(email: string) {
-  const posts = await client.fetch(
-    `*[_type == "post" && author != "${email}"]`
-  );
-  return posts;
+  const posts = await getAllPosts(email);
+  const user = await getUserByEmail(email);
+
+  let filteredPosts = posts.filter((post: Post) => {
+    const bookmark =
+      user.bookmarks &&
+      user.bookmarks.find(
+        (bookmark: { id: string }) => bookmark.id === post._id
+      );
+
+    if (bookmark) {
+      return true;
+    }
+  });
+
+  return filteredPosts;
 }
 
 export async function getLikedPosts(email: string) {
-  const posts = await client.fetch(
-    `*[_type == "post" && author != "${email}"]`
-  );
-  return posts;
+  const posts = await getAllPosts(email);
+  const user = await getUserByEmail(email);
+
+  let filteredPosts = posts.filter((post: Post) => {
+    const like =
+      user.likes &&
+      user.likes.find((like: { id: string }) => like.id === post._id);
+
+    if (like) {
+      return true;
+    }
+  });
+
+  return filteredPosts;
 }
 
 export async function updateMyLike(email: string, postId: string) {
-  const user = await getUserInfo(email);
+  const user = await getUserByEmail(email);
   const like =
     user.likes && user.likes.find((like: { id: string }) => like.id === postId);
 
+  console.log("like", like);
   if (like) {
     const likesToRemove = [`likes[_key=="${like._key}"]`];
     client
@@ -82,8 +106,8 @@ export async function updateMyLike(email: string, postId: string) {
   } else {
     client
       .patch(user._id)
-      .setIfMissing({ like: [] })
-      .append("like", [{ id: postId }])
+      .setIfMissing({ likes: [] })
+      .append("likes", [{ id: postId }])
       .commit({ autoGenerateArrayKeys: true })
       .then((updatedlike) => {
         console.log("Hurray, the like is updated! New document:");
@@ -97,10 +121,10 @@ export async function updateMyLike(email: string, postId: string) {
 }
 
 export async function updateMyBookmark(email: string, postId: string) {
-  const user = await getUserInfo(email);
-  const bookmark = user.bookmarks.find(
-    (bookmark: { id: string }) => bookmark.id === postId
-  );
+  const user = await getUserByEmail(email);
+  const bookmark =
+    user.bookmarks &&
+    user.bookmarks.find((bookmark: { id: string }) => bookmark.id === postId);
 
   if (bookmark) {
     const bookmarksToRemove = [`bookmarks[_key=="${bookmark._key}"]`];

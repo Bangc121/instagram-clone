@@ -26,6 +26,12 @@ const user = {
       type: "string",
     }),
     {
+      title: "Followings",
+      name: "followings",
+      type: "array",
+      of: [{ type: "user" }],
+    },
+    {
       type: "array",
       name: "likes",
       title: "Likes",

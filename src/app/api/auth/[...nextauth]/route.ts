@@ -16,10 +16,6 @@ const handler = NextAuth({
   },
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
-      // console.log("user", user);
-      // console.log("account", account);
-      // console.log("profile", profile);
-
       const response = await fetch(
         "http://localhost:3000/api/auth/userExists",
         {

@@ -14,9 +14,9 @@ import { useState } from "react";
 
 export default function PostCard({ post }: { post: Post }) {
   const { data: session } = useSession();
-  const { image, content, likes, isBookmarked } = post;
+  const { image, content, likes, isBookmarked, isLiked } = post;
   const [bookmark, setBookmark] = useState(isBookmarked);
-  const [like, setLike] = useState(false);
+  const [like, setLike] = useState(isLiked);
 
   const onClickBookmark = () => {
     console.log("Bookmark clicked");
@@ -45,13 +45,14 @@ export default function PostCard({ post }: { post: Post }) {
         />
         <h1>{user.name}</h1>
       </div> */}
-      <div className="bg-slate-100 p-10 h-96 dark:bg-slate-800">
+      <div className="relative h-80">
         <Image
           priority={true}
           src={`https://cdn.sanity.io/images/${client.config().projectId}/${client.config().dataset}/${image.asset._ref.split("-")[1] + "-" + image.asset._ref.split("-")[2] + "." + image.asset._ref.split("-")[3]}`}
           alt={image.alt}
-          width={500}
-          height={500}
+          fill
+          sizes="100%"
+          style={{ objectFit: "cover" }}
         />
       </div>
       <div className="flex flex-col items-center">
@@ -71,7 +72,7 @@ export default function PostCard({ post }: { post: Post }) {
           )}
         </div>
       </div>
-      <span className="p-2 pb-5">{content}</span>
+      <span className="p-2 mb-20">{content}</span>
     </article>
   );
 }

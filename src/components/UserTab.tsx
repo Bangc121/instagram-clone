@@ -13,18 +13,21 @@ export default function UserTab({ children }: UserTabProps) {
   const handleTabClick = (tabLabel: string) => {
     setActiveTab(tabLabel);
   };
+
   return (
-    <div className="tabs">
-      {children &&
-        children.map((child: ReactElement) => (
-          <Tab
-            key={child.props.label}
-            label={child.props.label}
-            onClick={handleTabClick}
-            activeTab={activeTab}
-          />
-        ))}
-      <div className="tab-content">
+    <div className="">
+      <section className="flex flex-row justify-around items-center h-12 w-70">
+        {children &&
+          children.map((child: ReactElement) => (
+            <Tab
+              key={child.props.label}
+              label={child.props.label}
+              onClick={handleTabClick}
+              activeTab={activeTab}
+            />
+          ))}
+      </section>
+      <div>
         {children.map((child: ReactElement) =>
           child.props.label === activeTab ? child.props.children : null
         )}
