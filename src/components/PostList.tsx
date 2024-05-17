@@ -3,8 +3,7 @@ import { Suspense, useCallback, useEffect, useState } from "react";
 import { Post } from "@/app/page";
 import PostCard from "./PostCard";
 import { getAllPosts } from "@/services/posts";
-import { useSession } from "next-auth/react";
-import useUser from "@/hook/useUser";
+import { useUser } from "@/hook/useUser";
 
 export default function PostList() {
   const [posts, setPosts] = useState<Post[]>([]);

@@ -89,7 +89,6 @@ export async function updateMyLike(email: string, postId: string) {
   const like =
     user.likes && user.likes.find((like: { id: string }) => like.id === postId);
 
-  console.log("like", like);
   if (like) {
     const likesToRemove = [`likes[_key=="${like._key}"]`];
     client

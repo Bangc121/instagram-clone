@@ -6,9 +6,8 @@ import Avatar from "@/components/Avatar";
 import Loading from "./loading";
 import Login from "@/components/Login";
 import PostList from "@/components/PostList";
-import useSWR from "swr";
 import { useSession } from "next-auth/react";
-import useUser from "@/hook/useUser";
+import { useUser } from "@/hook/useUser";
 
 export type Post = {
   _id: string;
@@ -28,19 +27,27 @@ export type Post = {
 };
 
 export type User = {
+  _key?: string;
   _id: string;
-  email: string;
+  email: string | null | undefined;
   fullName: string | null | undefined;
   profileImageUrl: string | null | undefined;
+  followings?: User[];
+  followers?: User[];
+  likes?: string[];
+  bookmarks?: string[];
 };
 
 export default function Home() {
-  const { status } = useSession();
+  const { data: session, status } = useSession();
   const { user, isLoading } = useUser();
 
+  if (isLoading) {
+    return <Loading />;
+  }
   return (
     <section className="flex flex-row justify-center">
-      {status === "authenticated" && user ? (
+      {status === "authenticated" ? (
         <>
           <PostList />
           <section className="flex flex-col justify-start items-start pt-6 px-8">

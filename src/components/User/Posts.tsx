@@ -1,23 +1,18 @@
 "use client";
 
+import { Post, User } from "@/app/page";
 import { useCallback, useEffect, useState } from "react";
 
-import { Post } from "@/app/page";
 import PostGrid from "../PostGrid";
 import { getMyPosts } from "@/services/posts";
-import { useSession } from "next-auth/react";
 
-export default function UserPosts() {
-  const { data: session } = useSession();
+export default function UserPosts({ user }: { user: User }) {
   const [posts, setPosts] = useState<Post[]>([]);
 
   const fetchPosts = useCallback(async () => {
-    // await new Promise((resolve) => setTimeout(resolve, 5000));
-    if (session?.user?.email) {
-      const response = await getMyPosts(session?.user?.email);
-      setPosts(response);
-    }
-  }, [session?.user?.email]);
+    const response = await getMyPosts(user.email);
+    setPosts(response);
+  }, [user.email]);
 
   useEffect(() => {
     fetchPosts();

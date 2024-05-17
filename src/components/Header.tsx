@@ -9,10 +9,10 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import LogoutButton from "./LogoutButton";
-import { useSession } from "next-auth/react";
+import { useUser } from "@/hook/useUser";
 
 export default function Header() {
-  const { data: session } = useSession();
+  const { user, isLoading } = useUser();
   return (
     <header className="bg-white flex justify-between items-center p-5">
       <Link className="px-3 text-black" href="/">
@@ -28,12 +28,12 @@ export default function Header() {
         <Link className="text-black" href="/write">
           <AiOutlinePlusSquare className="w-7 h-7" />
         </Link>
-        {session ? (
-          <Link className="text-black" href="/user">
+        {user ? (
+          <Link className="text-black" href={`/user/${user._id}`}>
             <Image
               className="rounded-full"
               priority={true}
-              src={session.user?.image || ""}
+              src={user.profileImageUrl || ""}
               alt="profile"
               width={30}
               height={30}

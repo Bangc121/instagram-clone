@@ -19,7 +19,6 @@ export default function PostCard({ post }: { post: Post }) {
   const [like, setLike] = useState(isLiked);
 
   const onClickBookmark = () => {
-    console.log("Bookmark clicked");
     if (session?.user?.email) {
       setBookmark(!bookmark);
       updateMyBookmark(session?.user?.email, post._id);
@@ -27,7 +26,6 @@ export default function PostCard({ post }: { post: Post }) {
   };
 
   const onClickLike = () => {
-    console.log("Like clicked");
     if (session?.user?.email) {
       setLike(!like);
       updateMyLike(session?.user?.email, post._id);
@@ -47,9 +45,9 @@ export default function PostCard({ post }: { post: Post }) {
       </div> */}
       <div className="relative h-80">
         <Image
-          priority={true}
+          priority
           src={`https://cdn.sanity.io/images/${client.config().projectId}/${client.config().dataset}/${image.asset._ref.split("-")[1] + "-" + image.asset._ref.split("-")[2] + "." + image.asset._ref.split("-")[3]}`}
-          alt={image.alt}
+          alt={image.alt || ""}
           fill
           sizes="100%"
           style={{ objectFit: "cover" }}
