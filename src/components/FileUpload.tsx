@@ -128,11 +128,11 @@ export default function FileUpload() {
         />
         <Button
           variant={"primary"}
-          color="bg-red-400"
+          color="bg-yellow-200"
           fullWidth={true}
           rounded="md"
         >
-          <span className="text-white font-bold">Publish</span>
+          <span className="text-black font-bold">Publish</span>
         </Button>
       </form>
     </>

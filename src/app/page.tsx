@@ -46,18 +46,18 @@ export default function Home() {
     return <Loading />;
   }
   return (
-    <section className="flex flex-row justify-center">
+    <>
       {status === "authenticated" ? (
-        <>
+        <section className="flex flex-row justify-center">
           <PostList />
           <section className="flex flex-col justify-start items-start pt-6 px-8">
             <Avatar user={user} width={50} height={50} />
             <span className="mt-10">Copyright INSTAGRAM-CLONE from METAL</span>
           </section>
-        </>
+        </section>
       ) : (
         <Login />
       )}
-    </section>
+    </>
   );
 }

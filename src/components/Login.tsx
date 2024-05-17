@@ -27,7 +27,7 @@ export default function Login() {
   }
 
   return (
-    <section className="flex flex-col h-full justify-center items-center">
+    <section className="flex flex-col w-full h-full justify-center items-center">
       {provider.map((data) => (
         <LoginButton
           key={data.name}
